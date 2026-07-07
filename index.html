@@ -253,6 +253,7 @@
         }
 
         // Kontrol Keyboard (Mencegah ular mundur menabrak badannya sendiri)
+     // Kontrol Keyboard (Mencegah ular mundur menabrak badannya sendiri)
         window.addEventListener("keydown", e => {
             switch (e.key) {
                 case "ArrowUp":
@@ -270,13 +271,41 @@
             }
         });
 
+        // Kontrol Layar Sentuh (Swipe untuk HP)
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            let xDiff = touchEndX - touchStartX;
+            let yDiff = touchEndY - touchStartY;
+
+            // Memastikan swipe cukup panjang (bukan sekadar ter-klik)
+            if (Math.abs(xDiff) > 30 || Math.abs(yDiff) > 30) {
+                if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                    // Mendeteksi usapan Kiri atau Kanan
+                    if (xDiff > 0 && dx === 0) { dx = 1; dy = 0; } // Kanan
+                    else if (xDiff < 0 && dx === 0) { dx = -1; dy = 0; } // Kiri
+                } else {
+                    // Mendeteksi usapan Atas atau Bawah
+                    if (yDiff > 0 && dy === 0) { dx = 0; dy = 1; } // Bawah
+                    else if (yDiff < 0 && dy === 0) { dx = 0; dy = -1; } // Atas
+                }
+            }
+        }
+
         // Gambar latar belakang awal sebelum game dimulai
         clearCanvas();
     </script>
-</body>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
-</html>
